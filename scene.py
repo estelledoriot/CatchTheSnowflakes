@@ -31,7 +31,7 @@ class Partie:
         self.fond: Objet = Objet(
             "images/mountain.png", largeur // 2, hauteur // 2, largeur
         )
-        self.bear: Personnage = Personnage(largeur // 2, hauteur - 50, 100, 10)
+        self.bear: Personnage = Personnage(largeur // 2, hauteur - 50, 150, 10)
         self.countdown: Countdown = Countdown(60)
         self.score: Score = Score()
         self.vies: Vies = Vies(3)
@@ -47,7 +47,7 @@ class Partie:
         fenetre.blit(self.bear.image, self.bear.rect)
         self.countdown.draw()
         self.score.draw()
-        self.vies.draw(500, 30)
+        self.vies.draw(80, 45)
 
     def joue_tour(self) -> None:
         """Joue un tour du jeu"""

@@ -24,5 +24,6 @@ class Score:
 
     def draw(self) -> None:
         """Affiche le score"""
+        largeur, _ = pygame.display.get_window_size()
         couleur_score = pygame.Color(240, 240, 240)
-        self.etiquette.draw(couleur_score, 80, 60)
+        self.etiquette.draw(couleur_score, largeur // 2, 60)
