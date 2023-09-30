@@ -21,7 +21,9 @@ class Fond(pygame.sprite.Sprite):
     ) -> None:
         super().__init__()
 
-        self.image: pygame.Surface = pygame.image.load(filename).convert_alpha()
+        self.image: pygame.Surface = pygame.image.load(
+            filename
+        ).convert_alpha()
         self.image = pygame.transform.scale_by(
             self.image, largeur_objet / self.image.get_width()
         )

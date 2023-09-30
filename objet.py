@@ -2,9 +2,9 @@
 classe Objet
 """
 
-import pygame
-
 from random import randint
+
+import pygame
 
 
 class Objet(pygame.sprite.Sprite):
@@ -26,7 +26,9 @@ class Objet(pygame.sprite.Sprite):
 
         self.vitesse: int = vitesse
 
-        self.image: pygame.Surface = pygame.image.load(filename).convert_alpha()
+        self.image: pygame.Surface = pygame.image.load(
+            filename
+        ).convert_alpha()
         self.image = pygame.transform.scale_by(
             self.image, taille / self.image.get_width()
         )

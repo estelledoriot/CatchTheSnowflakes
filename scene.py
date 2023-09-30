@@ -1,18 +1,20 @@
 """scènes du jeu"""
 
+from typing import Protocol
+
 import pygame
 
-from typing import Protocol
-from objet import Objet
-
-from personnage import Personnage
-from fond import Fond
 from countdown import Countdown
+from fond import Fond
+from objet import Objet
+from personnage import Personnage
 from score import Score
 from vies import Vies
 
 
 class Scene(Protocol):
+    """Scènes du jeu"""
+
     def affiche_scene(self) -> None:
         ...
 
@@ -42,7 +44,9 @@ class Partie:
 
         self.son_ok: pygame.mixer.Sound = pygame.mixer.Sound("sounds/coin.wav")
         self.son_ok.set_volume(0.25)
-        self.son_ko: pygame.mixer.Sound = pygame.mixer.Sound("sounds/laser.wav")
+        self.son_ko: pygame.mixer.Sound = pygame.mixer.Sound(
+            "sounds/laser.wav"
+        )
         self.son_ko.set_volume(0.25)
 
         self.new_snowflake: int = pygame.USEREVENT + 1
@@ -55,7 +59,8 @@ class Partie:
         fenetre = pygame.display.get_surface()
 
         fenetre.blit(self.fond.image, self.fond.rect)
-        fenetre.blit(self.bear.image, self.bear.rect)
+        if self.bear.visible:
+            fenetre.blit(self.bear.image, self.bear.rect)
         self.snowflakes.draw(fenetre)
         self.lightnings.draw(fenetre)
 
@@ -86,6 +91,7 @@ class Partie:
         if pygame.sprite.spritecollide(self.bear, self.lightnings, True):
             self.vies.perd(1)
             self.son_ko.play()
+            self.bear.clignote()
 
         # mise à jour du timer et du score
         self.countdown.update()

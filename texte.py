@@ -18,7 +18,9 @@ class Texte:
         self.surface: pygame.Surface = pygame.Surface((0, 0))
         self.rect: pygame.Rect = self.surface.get_rect()
 
-    def genere_surface(self, couleur: pygame.Color, centerx: int, centery: int):
+    def genere_surface(
+        self, couleur: pygame.Color, centerx: int, centery: int
+    ):
         """Génère le message"""
         self.surface = self.police.render(self.texte, True, couleur)
         self.rect = self.surface.get_rect(center=(centerx, centery))

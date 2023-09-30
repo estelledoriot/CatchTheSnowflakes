@@ -11,7 +11,9 @@ class Vies:
     def __init__(self, vies_max: int) -> None:
         self.vies: int = vies_max
         self.image = pygame.image.load("images/heart.png").convert_alpha()
-        self.image = pygame.transform.scale_by(self.image, 30 / self.image.get_width())
+        self.image = pygame.transform.scale_by(
+            self.image, 30 / self.image.get_width()
+        )
 
     def perd(self, nombre: int) -> None:
         """Perd des vies"""
