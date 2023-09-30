@@ -4,28 +4,41 @@ classe Objet
 
 import pygame
 
+from random import randint
+
 
 class Objet(pygame.sprite.Sprite):
-    """Objet du jeu
-    filename: nom du fichier contenant l'objet
-    centerx_depart, centery_depart: position initiale de l'objet (centre)
-    largeur_objet: largeur de l'objet à l'écran
+    """Objets qui tombent du ciel
+    filename: nom du fichier
+    taille: taille de l'objet
+    vitesse: vitesse de déplacement de l'objet
     """
 
     def __init__(
         self,
         filename: str,
-        centerx_depart: int,
-        centery_depart: int,
-        largeur_objet: int,
+        taille: int,
+        vitesse: int,
     ) -> None:
         super().__init__()
 
+        largeur, _ = pygame.display.get_window_size()
+
+        self.vitesse: int = vitesse
+
         self.image: pygame.Surface = pygame.image.load(filename).convert_alpha()
         self.image = pygame.transform.scale_by(
-            self.image, largeur_objet / self.image.get_width()
+            self.image, taille / self.image.get_width()
         )
-        self.mask: pygame.mask.Mask = pygame.mask.from_surface(self.image)
-        self.rect: pygame.Rect = self.image.get_rect(
-            center=(centerx_depart, centery_depart)
-        )
+        self.rect: pygame.Rect = self.image.get_rect()
+        self.rect.bottom = 0
+        self.rect.x = randint(0, largeur - self.image.get_width())
+
+    def update(self) -> None:
+        """Fait avancer le personnage"""
+        _, hauteur = pygame.display.get_window_size()
+
+        self.rect.y += self.vitesse
+
+        if self.rect.y > hauteur:
+            self.kill()
