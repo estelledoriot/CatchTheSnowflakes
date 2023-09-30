@@ -7,7 +7,7 @@
 
 import pygame
 
-from scene import Scene, Partie  # , Fin
+from scene import Fin, Partie, Scene
 
 
 class Jeu:
@@ -31,10 +31,10 @@ class Jeu:
 
     def scene_suivante(self) -> None:
         """Passe à la scène suivante"""
-        # if isinstance(self.scene_courante, Fin):
-        #     self.scene_courante = Partie()
-        # elif isinstance(self.scene_courante, Partie):
-        #     self.scene_courante = Fin(self.scene_courante.score.score)
+        if isinstance(self.scene_courante, Fin):
+            self.scene_courante = Partie()
+        elif isinstance(self.scene_courante, Partie):
+            self.scene_courante = Fin(self.scene_courante.score.score)
 
     def jouer(self) -> None:
         """Lance le jeu"""

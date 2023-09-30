@@ -4,11 +4,13 @@ from typing import Protocol
 
 import pygame
 
+from bouton import Bouton
 from countdown import Countdown
 from fond import Fond
 from objet import Objet
 from personnage import Personnage
 from score import Score
+from texte import Texte
 from vies import Vies
 
 
@@ -43,7 +45,7 @@ class Partie:
         self.vies: Vies = Vies(3)
 
         self.son_ok: pygame.mixer.Sound = pygame.mixer.Sound("sounds/coin.wav")
-        self.son_ok.set_volume(0.25)
+        self.son_ok.set_volume(0.15)
         self.son_ko: pygame.mixer.Sound = pygame.mixer.Sound(
             "sounds/laser.wav"
         )
@@ -100,3 +102,91 @@ class Partie:
     def passe_suivant(self) -> bool:
         """Teste si la partie est terminée"""
         return self.vies.mort or self.countdown.temps_restant <= 0
+
+
+class Fin:
+    """Scène de fin"""
+
+    def __init__(self, score: int) -> None:
+        largeur, hauteur = pygame.display.get_window_size()
+
+        self.decors: Fond = Fond(
+            "images/mountain.png", largeur // 2, hauteur // 2, largeur
+        )
+        self.masque: pygame.Surface = pygame.Surface(
+            (largeur, hauteur), flags=pygame.SRCALPHA
+        )
+        self.masque.fill(pygame.Color(230, 230, 230, 150))
+
+        record: int = 0
+        with open("record.txt", "r", encoding="utf-8") as fichier:
+            record: int = int(fichier.read())
+
+        if score > record:
+            record = score
+            self.message_fin: Texte = Texte(
+                "Nouveau record", "font/Avdira.otf", 100
+            )
+            with open("record.txt", "w", encoding="utf-8") as fichier:
+                fichier.write(str(score))
+        else:
+            self.message_fin: Texte = Texte(
+                "Perdu ...", "font/Avdira.otf", 100
+            )
+
+        self.texte_score: Texte = Texte(
+            f"Score : {score}", "font/Avdira.otf", 50
+        )
+        self.texte_record: Texte = Texte(
+            f"Record : {record}", "font/Avdira.otf", 50
+        )
+
+        self.son_fin: pygame.mixer.Sound = pygame.mixer.Sound("sounds/end.wav")
+        self.son_fin.set_volume(0.25)
+        self.son_fin.play()
+
+        self.bouton_rejouer: Bouton = Bouton(
+            Texte("Rejouer", "font/Avdira.otf", 50)
+        )
+        self.son_bouton: pygame.mixer.Sound = pygame.mixer.Sound(
+            "sounds/pop.wav"
+        )
+        self.son_bouton.set_volume(0.25)
+        self.next: bool = False
+
+    def affiche_scene(self) -> None:
+        """Affiche la scène de fin"""
+        fenetre = pygame.display.get_surface()
+        largeur, _ = pygame.display.get_window_size()
+
+        fenetre.blit(self.decors.image, self.decors.rect)
+        fenetre.blit(self.masque, (0, 0))
+        couleur_score = pygame.Color(28, 42, 73)
+        couleur_message = pygame.Color(137, 122, 194)
+        self.texte_score.draw(couleur_score, largeur // 2, 100)
+        self.texte_record.draw(couleur_score, largeur // 2, 170)
+        self.message_fin.draw(couleur_message, largeur // 2, 350)
+        couleur_texte = (
+            pygame.Color(225, 238, 248)
+            if self.bouton_rejouer.touche_souris()
+            else pygame.Color(240, 240, 240)
+        )
+        couleur_fond = (
+            pygame.Color(28, 64, 100)
+            if self.bouton_rejouer.touche_souris()
+            else pygame.Color(28, 42, 73)
+        )
+        self.bouton_rejouer.draw(
+            couleur_texte, couleur_fond, largeur // 2, 550
+        )
+
+    def joue_tour(self) -> None:
+        """Rien"""
+        for _ in pygame.event.get(pygame.MOUSEBUTTONDOWN):
+            if self.bouton_rejouer.touche_souris():
+                self.son_bouton.play()
+                self.next = True
+
+    def passe_suivant(self) -> bool:
+        """Vérifie si le bouton rejouer est cliqué"""
+        return self.next
