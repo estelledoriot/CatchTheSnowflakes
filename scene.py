@@ -4,11 +4,11 @@ from typing import Protocol
 
 import pygame
 
+from background import Background
+from bear import Bear
 from bouton import Bouton
 from countdown import Countdown
-from fond import Fond
 from objet import Objet
-from personnage import Personnage
 from score import Score
 from texte import Texte
 from vies import Vies
@@ -33,10 +33,10 @@ class Partie:
     def __init__(self) -> None:
         largeur, hauteur = pygame.display.get_window_size()
 
-        self.fond: Fond = Fond(
-            "images/mountain.png", largeur // 2, hauteur // 2, largeur
+        self.fond: Background = Background(
+            "images/mountain.png", (largeur // 2, hauteur // 2), largeur
         )
-        self.bear: Personnage = Personnage(largeur // 2, hauteur - 50, 150, 10)
+        self.bear: Bear = Bear((largeur // 2, hauteur - 50), 150, 10)
         self.snowflakes: pygame.sprite.Group = pygame.sprite.Group()
         self.lightnings: pygame.sprite.Group = pygame.sprite.Group()
 
@@ -61,7 +61,7 @@ class Partie:
         fenetre = pygame.display.get_surface()
 
         fenetre.blit(self.fond.image, self.fond.rect)
-        if self.bear.visible:
+        if self.bear.is_visible:
             fenetre.blit(self.bear.image, self.bear.rect)
         self.snowflakes.draw(fenetre)
         self.lightnings.draw(fenetre)
@@ -93,7 +93,7 @@ class Partie:
         if pygame.sprite.spritecollide(self.bear, self.lightnings, True):
             self.vies.perd(1)
             self.son_ko.play()
-            self.bear.clignote()
+            self.bear.start_flashing()
 
         # mise à jour du timer et du score
         self.countdown.update()
@@ -110,8 +110,8 @@ class Fin:
     def __init__(self, score: int) -> None:
         largeur, hauteur = pygame.display.get_window_size()
 
-        self.decors: Fond = Fond(
-            "images/mountain.png", largeur // 2, hauteur // 2, largeur
+        self.decors: Background = Background(
+            "images/mountain.png", (largeur // 2, hauteur // 2), largeur
         )
         self.masque: pygame.Surface = pygame.Surface(
             (largeur, hauteur), flags=pygame.SRCALPHA
