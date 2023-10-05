@@ -16,7 +16,7 @@ class Countdown(pygame.sprite.Sprite):
         self.total_time: int = total_time
 
         self.font: pygame.font.Font = pygame.font.Font("font/Avdira.otf", 40)
-        self.timer_color: pygame.Color = pygame.Color(235, 80, 63)
+        self.timer_color: pygame.Color = pygame.Color(11, 12, 57)
         self.image: pygame.Surface = self.font.render(
             str(self.remaining_time), True, self.timer_color
         )
