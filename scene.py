@@ -8,7 +8,7 @@ from background import Background
 from bear import Bear
 from bouton import Bouton
 from countdown import Countdown
-from objet import Objet
+from object import Object
 from score import Score
 from texte import Texte
 from vies import Vies
@@ -40,7 +40,7 @@ class Partie:
         self.snowflakes: pygame.sprite.Group = pygame.sprite.Group()
         self.lightnings: pygame.sprite.Group = pygame.sprite.Group()
 
-        self.countdown: Countdown = Countdown(60)
+        self.countdown: Countdown = Countdown(60, (largeur - 80, 60))
         self.score: Score = Score()
         self.vies: Vies = Vies(3)
 
@@ -66,7 +66,7 @@ class Partie:
         self.snowflakes.draw(fenetre)
         self.lightnings.draw(fenetre)
 
-        self.countdown.draw()
+        fenetre.blit(self.countdown.image, self.countdown.rect)
         self.score.draw()
         self.vies.draw(80, 45)
 
@@ -77,10 +77,10 @@ class Partie:
 
         # générer les nouveaux objets
         for _ in pygame.event.get(self.new_snowflake):
-            self.snowflakes.add(Objet("images/snowflake.png", 50, 8))
+            self.snowflakes.add(Object("images/snowflake.png", 50, 8))
 
         for _ in pygame.event.get(self.new_lightning):
-            self.lightnings.add(Objet("images/lightning.png", 25, 15))
+            self.lightnings.add(Object("images/lightning.png", 25, 15))
 
         # faire tomber les objets
         self.snowflakes.update()
@@ -101,7 +101,7 @@ class Partie:
 
     def passe_suivant(self) -> bool:
         """Teste si la partie est terminée"""
-        return self.vies.mort or self.countdown.temps_restant <= 0
+        return self.vies.mort or self.countdown.time_finished
 
 
 class Fin:
